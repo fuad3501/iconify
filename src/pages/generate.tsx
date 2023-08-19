@@ -2,8 +2,10 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { Input} from "~/components/Input";
 import { FormGroup } from "~/components/FormGroup";
+import { Button } from "~/components/Button"
 import React, { useState } from "react";
 import { api } from "~/utils/api";
+import { signIn, signOut, useSession } from "next-auth/react";
 
 const GeneratePage: NextPage = () => {
   
@@ -35,6 +37,10 @@ const GeneratePage: NextPage = () => {
     });
   }
 
+  const session = useSession();        // Get login status
+  const isLoggedIn = !!session.data;   // force to a boolean by doing double NOT
+
+
   return (
     <>
       <Head>
@@ -44,6 +50,23 @@ const GeneratePage: NextPage = () => {
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
         
+        {/* only shows button if isLoggedIn is True */}
+        {!isLoggedIn && 
+        (<Button onClick={() => {
+            signIn().catch(console.error);
+            }}>Login</Button>)
+        }
+
+        {/* only shows button if isLoggedIn is False */}
+        {isLoggedIn && 
+        (<Button onClick={() => {
+            signOut().catch(console.error);
+            }}>Logout</Button>)
+        }
+
+        {/* Show Username */}
+        {session.data?.user.name}
+
         <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
             
             <FormGroup>
@@ -51,7 +74,7 @@ const GeneratePage: NextPage = () => {
                 <Input value={form.prompt} onChange={updateForm("prompt")}></Input>
             </FormGroup>
             
-            <button className="bg-blue-400 hover:bg-blue-500 px-4 py-2 rounded">Submit</button>
+            <Button>Generate</Button>
         
         </form>
       
