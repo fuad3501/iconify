@@ -6,6 +6,7 @@ import { Button } from "~/components/Button"
 import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { signIn, signOut, useSession } from "next-auth/react";
+import Image from "next/image";
 
 const GeneratePage: NextPage = () => {
   
@@ -13,7 +14,7 @@ const GeneratePage: NextPage = () => {
     prompt: "",
   });
   
-  const [imageURL, setImageURL] = useState('')
+  const [image, setImage] = useState('')
 
   // Tracks form inputs into state
   function updateForm(key: string){
@@ -29,7 +30,7 @@ const GeneratePage: NextPage = () => {
     onSuccess(data){
         console.log("mutation finished", data.imageURL);
         if (!data.imageURL) return
-        setImageURL(data.imageURL)
+        setImage(data.imageURL)
     }
   });
 
@@ -39,6 +40,7 @@ const GeneratePage: NextPage = () => {
     generateIcon.mutate({
         prompt: form.prompt
     });
+    setForm({prompt: ""});        // resets prompt to blank
   }
 
   const session = useSession();        // Get login status
@@ -81,7 +83,8 @@ const GeneratePage: NextPage = () => {
             <Button>Generate</Button>
         
         </form>
-        <img src={imageURL}></img>
+        
+        <Image src={image} alt="Generated Image" width="100" height="100" />
       </main>
     </>
   );
