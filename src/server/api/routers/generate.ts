@@ -15,6 +15,7 @@ const s3 = new AWS.S3({
     region: "eu-west-2",
   });
 
+const BUCKET_NAME = "iconify-s3-bucket";
 
 // Initialises and creates OpenAI object 
 const configuration = new Configuration({
@@ -72,12 +73,19 @@ export const generateRouter = createTRPCRouter({
         // Send prompt to OpenAI
         const base64EncodedImage = await generateIcon(input.prompt)
 
+        const icon = await ctx.prisma.icon.create({
+            data: {
+                prompt: input.prompt,
+                userId: ctx.session.user.id,
+            },
+        });
+
         // Save Image to S3 Bucket
         await s3
             .putObject({
-                Bucket: "iconify-s3-bucket",
+                Bucket: BUCKET_NAME,
                 Body: Buffer.from(base64EncodedImage!, "base64"),
-                Key: "my-image.png",
+                Key: icon.id,
                 ContentEncoding: "base64",
                 ContentType: "image/gif",
 
@@ -85,7 +93,7 @@ export const generateRouter = createTRPCRouter({
         .promise();
 
         return {
-          imageURL: base64EncodedImage,  
+          imageURL: `https://${BUCKET_NAME}.s3.eu-west-2.amazonaws.com/${icon.id}`,  
         };
     })
 });

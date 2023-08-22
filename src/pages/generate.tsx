@@ -84,8 +84,9 @@ const GeneratePage: NextPage = () => {
         
         </form>
         
-        {/* <Image src={image} alt="Generated Image" width="100" height="100" /> */}
-        <img src={`data:image/png;base64, ${image}`} alt="Generated Image" width="100" height="100" ></img>
+        {/* <img src={image} alt="" width="100" height="100"></img> */}
+        <Image src={image} alt="Generated Image" width="100" height="100" />
+        {/* <img src={`data:image/png;base64, ${image}`} alt="Generated Image" width="100" height="100" ></img> */}
       </main>
     </>
   );
