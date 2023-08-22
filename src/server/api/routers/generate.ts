@@ -3,6 +3,18 @@ import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { Configuration, OpenAIApi } from "openai";
 import { env } from "~/env.mjs";
+import { Mock_Image } from "~/data/Mock_Image";
+import AWS from "aws-sdk";
+
+// Initialise AWS S3 Object
+const s3 = new AWS.S3({
+    credentials: {
+      accessKeyId: env.S3_ACCESS_KEY,
+      secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+    },
+    region: "eu-west-2",
+  });
+
 
 // Initialises and creates OpenAI object 
 const configuration = new Configuration({
@@ -13,15 +25,16 @@ const openai = new OpenAIApi(configuration);
 // Function that submits prompt to Dall E API and returns URL of generated image
 async function generateIcon(prompt: string): Promise<string | undefined>{
     if (env.MOCK_OPENAI === "true"){
-        return "https://oaidalleapiprodscus.blob.core.windows.net/private/org-v8SkdSpBJnWxSDAGTU2D4fwd/user-cxWX6SyY0qmOvzTYt6ka4HOG/img-fawRs2DXj7feijhq0sZXb1iY.png?st=2023-08-20T21%3A03%3A53Z&se=2023-08-20T23%3A03%3A53Z&sp=r&sv=2021-08-06&sr=b&rscd=inline&rsct=image/png&skoid=6aaadede-4fb3-4698-a8f6-684d7786b067&sktid=a48cca56-e6da-484e-a814-9c849652bcb3&skt=2023-08-20T21%3A44%3A59Z&ske=2023-08-21T21%3A44%3A59Z&sks=b&skv=2021-08-06&sig=4Wl2XP/heRGwYwNPOy8GqvwGFTBDAzVFdjU7SOYvZWg%3D"
+        return Mock_Image
     }else{
         // Once sufficient credit is verified, submit the prompt to Dall E
         const response = await openai.createImage({
             prompt,
             n: 1,
-            size: "1024x1024",
+            size: "512x512",
+            response_format: "b64_json",
             });
-        return response.data.data[0]?.url!;
+        return response.data.data[0]?.b64_json;
     }
     
 }
@@ -57,10 +70,22 @@ export const generateRouter = createTRPCRouter({
         }
 
         // Send prompt to OpenAI
-        const url = await generateIcon(input.prompt)
+        const base64EncodedImage = await generateIcon(input.prompt)
+
+        // Save Image to S3 Bucket
+        await s3
+            .putObject({
+                Bucket: "iconify-s3-bucket",
+                Body: Buffer.from(base64EncodedImage!, "base64"),
+                Key: "my-image.png",
+                ContentEncoding: "base64",
+                ContentType: "image/gif",
+
+        })
+        .promise();
 
         return {
-          imageURL: url,  
+          imageURL: base64EncodedImage,  
         };
     })
 });
