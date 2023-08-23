@@ -25,6 +25,9 @@ const server = z.object({
   MOCK_OPENAI: z.string(),
   S3_ACCESS_KEY: z.string(),
   S3_SECRET_ACCESS_KEY: z.string(),
+  NEXT_STRIPE_SECRET_KEY: z.string(),
+  HOST_NAME: z.string(),
+  PRICE_ID_100: z.string(),
 });
 
 /**
@@ -33,6 +36,7 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+  NEXT_PUBLIC_STRIPE_KEY: z.string(),
 });
 
 /**
@@ -52,6 +56,10 @@ const processEnv = {
   MOCK_OPENAI: process.env.MOCK_OPENAI,
   S3_ACCESS_KEY: process.env.S3_ACCESS_KEY,
   S3_SECRET_ACCESS_KEY: process.env.S3_SECRET_ACCESS_KEY,
+  NEXT_PUBLIC_STRIPE_KEY: process.env.NEXT_PUBLIC_STRIPE_KEY,
+  NEXT_STRIPE_SECRET_KEY: process.env.NEXT_STRIPE_SECRET_KEY,
+  HOST_NAME: process.env.HOST_NAME,
+  PRICE_ID_100: process.env.PRICE_ID_100,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 

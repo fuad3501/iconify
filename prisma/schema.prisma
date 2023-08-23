@@ -67,14 +67,6 @@ model Icon {
     userId        String?
 }
 
-// model Icon {
-//     id            String    @id @default(cuid())
-//     prompt        String?
-//     User          User?     @relation(fields: [userId], references: [id])
-//     userId        String?
-
-// }
-
 model VerificationToken {
     identifier String
     token      String   @unique

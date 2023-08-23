@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import { useBuyCredits } from "~/hooks/useBuyCredits";
 
 const GeneratePage: NextPage = () => {
   
@@ -15,6 +16,8 @@ const GeneratePage: NextPage = () => {
   });
   
   const [image, setImage] = useState('')
+
+  const { buyCredits } = useBuyCredits();
 
   // Tracks form inputs into state
   function updateForm(key: string){
@@ -58,16 +61,20 @@ const GeneratePage: NextPage = () => {
         
         {/* only shows button if isLoggedIn is True */}
         {!isLoggedIn && 
-        (<Button onClick={() => {
-            signIn().catch(console.error);
-            }}>Login</Button>)
+        <Button onClick={() => {
+            signIn().catch(console.error)}}>Login</Button>  
         }
 
         {/* only shows button if isLoggedIn is False */}
         {isLoggedIn && 
-        (<Button onClick={() => {
+        <>
+        <Button onClick={() => {
+            buyCredits().catch(console.error)}}>Buy Credits</Button>
+
+        <Button onClick={() => {
             signOut().catch(console.error);
-            }}>Logout</Button>)
+            }}>Logout</Button>
+        </>
         }
 
         {/* Show Username */}
@@ -84,9 +91,7 @@ const GeneratePage: NextPage = () => {
         
         </form>
         
-        {/* <img src={image} alt="" width="100" height="100"></img> */}
         <Image src={image} alt="Generated Image" width="100" height="100" />
-        {/* <img src={`data:image/png;base64, ${image}`} alt="Generated Image" width="100" height="100" ></img> */}
       </main>
     </>
   );
