@@ -20,8 +20,8 @@ export const checkoutRouter = createTRPCRouter({
           {price: env.PRICE_ID_100, quantity: 1},
         ],
         mode: 'payment',
-        success_url: `${env.HOST_NAME}`,
-        cancel_url: `${env.HOST_NAME}`,
+        success_url: `${env.HOST_NAME}/generate`,
+        cancel_url: `${env.HOST_NAME}/generate`,
       });
 
     }),
