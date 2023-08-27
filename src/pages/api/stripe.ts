@@ -16,21 +16,18 @@ export const config = {
 
 const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
   if (req.method === "POST") {
-    console.log("webhook received")
     const buf = await buffer(req);
     const sig = req.headers["stripe-signature"] as string;
 
     let event;
 
     try {
-      console.log("making event")
       event = stripe.webhooks.constructEvent(
         buf,
         sig,
         env.STRIPE_WEBHOOK_SECRET
       );
     } catch (err) {
-      console.log("error occured")
       let message = "Unknown Error";
       if (err instanceof Error) message = err.message;
       res.status(400).send(`Webhook Error: ${message}`);
@@ -38,8 +35,7 @@ const webhook = async (req: NextApiRequest, res: NextApiResponse) => {
     }
 
     switch (event.type) {
-      case "checkout.session.completed":
-      console.log("Checkout Session Completed")  
+      case "checkout.session.completed": 
       const completedEvent = event.data.object as {
           id: string;
           metadata: {
