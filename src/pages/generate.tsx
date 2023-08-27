@@ -5,9 +5,9 @@ import { FormGroup } from "~/components/FormGroup";
 import { Button } from "~/components/Button"
 import React, { useState } from "react";
 import { api } from "~/utils/api";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useBuyCredits } from "~/hooks/useBuyCredits";
+
 
 const GeneratePage: NextPage = () => {
   
@@ -17,7 +17,6 @@ const GeneratePage: NextPage = () => {
   
   const [image, setImage] = useState('')
 
-  const { buyCredits } = useBuyCredits();
 
   // Tracks form inputs into state
   function updateForm(key: string){
@@ -58,27 +57,6 @@ const GeneratePage: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center">
-        
-        {/* only shows button if isLoggedIn is True */}
-        {!isLoggedIn && 
-        <Button onClick={() => {
-            signIn().catch(console.error)}}>Login</Button>  
-        }
-
-        {/* only shows button if isLoggedIn is False */}
-        {isLoggedIn && 
-        <>
-        <Button onClick={() => {
-            buyCredits().catch(console.error)}}>Buy Credits</Button>
-
-        <Button onClick={() => {
-            signOut().catch(console.error);
-            }}>Logout</Button>
-        </>
-        }
-
-        {/* Show Username */}
-        {session.data?.user.name}
 
         <form className="flex flex-col gap-4" onSubmit={handleFormSubmit}>
             
