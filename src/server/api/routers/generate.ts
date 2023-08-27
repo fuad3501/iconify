@@ -45,6 +45,7 @@ export const generateRouter = createTRPCRouter({
     generateIcon: protectedProcedure.input(
         z.object({
             prompt: z.string(),
+            colour: z.string(),
         })
     ).mutation(async ({ctx, input}) => {
         // Check the user has enough credits in their account
@@ -71,7 +72,8 @@ export const generateRouter = createTRPCRouter({
         }
 
         // Send prompt to OpenAI
-        const base64EncodedImage = await generateIcon(input.prompt)
+        const finalPrompt = `A modern icon in ${input.colour} of a ${input.prompt}`
+        const base64EncodedImage = await generateIcon(finalPrompt)
 
         const icon = await ctx.prisma.icon.create({
             data: {
