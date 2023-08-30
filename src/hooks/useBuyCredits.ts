@@ -14,7 +14,7 @@ export function useBuyCredits(){
             const stripe = await stripePromise;
             await stripe?.redirectToCheckout({
                 sessionId: response.id,
-            });
+            })
         },
-    };
-};
+    }
+}
