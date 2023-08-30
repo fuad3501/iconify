@@ -35,6 +35,8 @@ const GeneratePage: NextPage = () => {
         console.log("mutation finished", data.imageURL);
         if (!data.imageURL) return
         setImage(data.imageURL)
+        console.log("here")
+        console.log(image)
     }
   });
 
@@ -79,8 +81,8 @@ const GeneratePage: NextPage = () => {
                   {colour}
                   </label>
                 ))}
-
                 
+
             </FormGroup>
             
             <Button disabled={generateIcon.isLoading} isLoading={generateIcon.isLoading} className="disabled:bg-gray-600">Generate</Button>

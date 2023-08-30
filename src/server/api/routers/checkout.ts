@@ -3,7 +3,7 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 import { env } from "~/env.mjs";
 import Stripe from 'stripe';
 
-const stripe = new Stripe(env.NEXT_STRIPE_SECRET_KEY, {
+const stripe = new Stripe(env.NEXT_SECRET_STRIPE_KEY, {
     apiVersion: "2022-11-15",
 })
 
